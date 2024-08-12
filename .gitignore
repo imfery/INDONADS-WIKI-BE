@@ -12,3 +12,6 @@ coverage
 
 # seeds
 seeds_data
+
+# debugger purpose
+.vscode

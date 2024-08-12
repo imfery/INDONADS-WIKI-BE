@@ -1,22 +1,22 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
-const eventValidation = require('../../validations/upcomingEvents.validation');
-const eventController = require('../../controllers/upcomingEvents.controller');
+const eventValidation = require('../../validations/events.validation');
+const eventController = require('../../controllers/events');
 
 const router = express.Router();
 
 router
-  .route('/')
-  .post(auth('manageEvents'), validate(eventValidation.createEvent), eventController.createEvent)
-  .get(validate(eventValidation.getEvents), eventController.getEvents);
+	.route('/')
+	.post(auth('manageEvents'), validate(eventValidation.createEvent), eventController.createEvent)
+	.get(validate(eventValidation.getEvents), eventController.getEvents);
 
 router
-  .route('/:id')
-  .get(validate(eventValidation.getEventById), eventController.getEventById)
-  .patch(auth('manageEvents'), validate(eventValidation.updateEventById), eventController.updateEventById)
-  .delete(auth('manageEvents'), validate(eventValidation.deleteEventById), eventController.deleteEventById);
-
+	.route('/:id')
+	.get(validate(eventValidation.getEventById), eventController.getEventById)
+	.patch(auth('manageEvents'), validate(eventValidation.updateEventById), eventController.updateEventById)
+	.delete(auth('manageEvents'), validate(eventValidation.deleteEventById), eventController.deleteEventById);
+	  
 module.exports = router;
 
 /**
@@ -79,7 +79,7 @@ module.exports = router;
  *                 error:
  *                   type: string
  *                 message:
- *                   type: stringz
+ *                   type: string
  */
 
 /**

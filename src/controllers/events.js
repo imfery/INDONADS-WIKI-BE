@@ -5,7 +5,6 @@ const catchAsync = require('../utils/catchAsync');
 const { eventService } = require('../services');
 const { successResponse } = require('./custom.controller')
 
-
 const createEvent = catchAsync(async (req, res) => {
     const event = await eventService.createEvent(req.body);
     res.status(httpStatus.CREATED).send(successResponse(event));
@@ -41,5 +40,5 @@ module.exports = {
     getEvents,
     getEventById,
     updateEventById,
-    deleteEventById
+    deleteEventById,
 };
