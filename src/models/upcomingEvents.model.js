@@ -27,8 +27,12 @@ const eventSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// Index the date field for better sorting performance
+eventSchema.index({ date: 1 });
+
 eventSchema.plugin(toJSON);
 eventSchema.plugin(paginate);
+
 const Event = mongoose.model('Event', eventSchema);
 
 module.exports = Event;
