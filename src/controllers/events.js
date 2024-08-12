@@ -3,7 +3,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { eventService } = require('../services');
-const { successResponse } = require('./custom.controller')
+const { successResponse } = require('./custom.controller');
 
 const createEvent = catchAsync(async (req, res) => {
     const event = await eventService.createEvent(req.body);
@@ -16,6 +16,15 @@ const getEvents = catchAsync(async (req, res) => {
     const result = await eventService.queryEvents(filter, options);
     res.send(successResponse(result));
 });
+
+const getEventsSummary = catchAsync(async (req, res) => {
+    const eventsSummary = await eventService.getEventsSummary();
+
+    res.status(httpStatus.OK).send(
+        successResponse(eventsSummary)
+    )
+});
+
 
 const getEventById = catchAsync(async (req, res) => {
     const event = await eventService.getEventById(req.params.id);
@@ -41,4 +50,5 @@ module.exports = {
     getEventById,
     updateEventById,
     deleteEventById,
+    getEventsSummary,
 };

@@ -3,6 +3,7 @@ const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const eventValidation = require('../../validations/events.validation');
 const eventController = require('../../controllers/events');
+const catchAsync = require('../../utils/catchAsync');
 
 const router = express.Router();
 
@@ -12,7 +13,11 @@ router
 	.get(validate(eventValidation.getEvents), eventController.getEvents);
 
 router
-	.route('/:id')
+	.route('/summary')
+	.get(validate(eventController.getEventsSummary), catchAsync(eventController.getEventsSummary));
+
+router
+	.route('/detail/:id')
 	.get(validate(eventValidation.getEventById), eventController.getEventById)
 	.patch(auth('manageEvents'), validate(eventValidation.updateEventById), eventController.updateEventById)
 	.delete(auth('manageEvents'), validate(eventValidation.deleteEventById), eventController.deleteEventById);
@@ -119,7 +124,47 @@ module.exports = router;
 
 /**
  * @swagger
- * /events/{id}:
+ * /events/summary:
+ *   get:
+ *     summary: Retrieve a list of events summary
+ *     description: Get a summary of recent 10 upcoming events and 3 concluded events.
+ *     tags: [Events]
+ *     responses:
+ *       '200':
+ *         description: A summary of upcoming and concluded events
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 upcomingEvents:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Event'
+ *                   description: List of upcoming events
+ *                 concludedEvents:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Event'
+ *                   description: List of concluded events
+ *       '404':
+ *         description: No events found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                   description: Error message
+ */
+
+
+/**
+ * @swagger
+ * /events/detail/{id}:
  *   get:
  *     summary: Retrieve a specific event
  *     description: Get details of a specific event by ID.

@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const { Event } = require('../models');
 const ApiError = require('../utils/ApiError');
+const {UPCOMING_EVENTS_COUNT, CONCLUDED_EVENTS_COUNT} = require('../constants/index')
 
 /**
  * Create an event
@@ -23,33 +24,105 @@ const createEvent = async (userBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryEvents = async (filter, options) => {
-    const sortField = options.sortField || 'date';
-    const sortOrder = options.sortBy === 'desc' ? -1 : 1;
+  const sortField = options.sortField || 'date';
+  const sortOrder = options.sortBy === 'desc' ? -1 : 1;
 
-    const sort = { [sortField]: sortOrder };
+  const sort = { [sortField]: sortOrder };
 
-    // Optionally set pagination defaults
-    const limit = options.limit || 10;
-    const page = options.page || 1;
-    const skip = (page - 1) * limit;
+  const usePagination = options.limit !== undefined && options.page !== undefined;
 
-    const events = await Event.find(filter)
-        .sort(sort)
-        .skip(skip)
-        .limit(limit)
-        .exec();
+  let result;
 
-    const totalResults = await Event.countDocuments(filter).exec();
-    const totalPages = Math.ceil(totalResults / limit);
+  if (usePagination) {
+      const limit = options.limit || 10;
+      const page = options.page || 1;
+      const skip = (page - 1) * limit;
 
-    return {
-        results: events,
-        page,
-        limit,
-        totalPages,
-        totalResults
-    };
+      const events = await Event.find(filter)
+          .sort(sort)
+          .skip(skip)
+          .limit(limit)
+          .exec();
+
+      const totalResults = await Event.countDocuments(filter).exec();
+      const totalPages = Math.ceil(totalResults / limit);
+
+      result = {
+          results: events,
+          page,
+          limit,
+          totalPages,
+          totalResults
+      };
+  } else {
+      const events = await Event.find(filter).sort(sort).exec();
+
+      result = events;
+  }
+
+  return result;
 };
+
+
+/**
+ * Fetch upcoming events
+ * @param {Object} [options]
+ * @returns {Promise<Object>}
+ */
+const getUpcomingEvents = async () => {
+  const now = new Date();
+
+  const upcomingFilter = {
+      date: { $gte: now }
+  };
+  const upcomingOptions = {
+      limit: UPCOMING_EVENTS_COUNT,
+      sortField: 'date',
+      sortBy: 'asc',
+  };
+  return queryEvents(upcomingFilter, upcomingOptions);
+};
+
+/**
+* Fetch concluded events
+* @param {Object} [options] -
+* @returns {Promise<Object>} -
+*/
+const getConcludedEvents = async () => {
+  const now = new Date();
+
+  const concludedFilter = {
+      date: { $lt: now } // Past events
+  };
+  const concludedOptions = {
+      limit: CONCLUDED_EVENTS_COUNT,
+      sortField: 'date',
+      sortBy: 'desc',
+  };
+  return queryEvents(concludedFilter, concludedOptions);
+};
+
+/**
+* Fetch both upcoming and concluded events
+* @returns {Promise<Object>}
+*/
+  const getEventsSummary = async () => {
+  const [upcomingEvents, concludedEvents] = await Promise.all([
+        getUpcomingEvents(),
+        getConcludedEvents()
+    ]);
+
+  const removePagination = (events) => {
+      const { page, limit, totalPages, totalResults, ...filteredEvents } = events;
+      return filteredEvents;
+  };
+
+  return {
+    upcomingEvents,
+    concludedEvents
+  };
+};
+
 
 /**
  * Get event by id
@@ -96,5 +169,6 @@ module.exports = {
     queryEvents,
     getEventById,
     updateEventById,
-    deleteEventById
+    deleteEventById,
+    getEventsSummary
 };  
