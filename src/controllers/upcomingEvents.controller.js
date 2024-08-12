@@ -3,7 +3,7 @@ const httpStatus = require('http-status');
 // const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { eventService } = require('../services');
-const { successResponse } = require('./custom.controller')
+const { successPostResponse } = require('./custom.controller')
 
 const createEvent = catchAsync(async (req, res) => {
     const user = await eventService.createEvent(req.body);
