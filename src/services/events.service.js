@@ -92,7 +92,7 @@ const getConcludedEvents = async () => {
     const now = new Date();
 
     const concludedFilter = {
-        date: { $lt: now } 
+        date: { $lt: now }
     };
     const concludedOptions = {
         limit: CONCLUDED_EVENTS_COUNT,
@@ -111,11 +111,6 @@ const getEventsSummary = async () => {
         getUpcomingEvents(),
         getConcludedEvents()
     ]);
-
-    const removePagination = (events) => {
-        const { page, limit, totalPages, totalResults, ...filteredEvents } = events;
-        return filteredEvents;
-    };
 
     return {
         upcomingEvents,
