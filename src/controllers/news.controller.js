@@ -21,8 +21,7 @@ const getLatestNews = catchAsync(async (req, res) => {
     const options = pick(req.query, ['sortField', 'sortBy', 'limit', 'page']);
     const latestNews = await newsService.getLatestNews(options);
     const response = {
-        data: latestNews.data || [],
-        timestamps: Math.floor(Date.now() / 1000),
+        ...latestNews,
     };
 
     res.status(httpStatus.OK).send(successResponse(response));

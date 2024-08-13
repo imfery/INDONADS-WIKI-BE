@@ -49,7 +49,7 @@ module.exports = router;
  *         name: sortBy
  *         schema:
  *           type: string
- *         default: asc
+ *         default: desc
  *         description: Sort order (either 'asc' or 'desc')
  *       - in: query
  *         name: limit

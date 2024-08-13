@@ -46,7 +46,7 @@ const queryNews = async (filter, options) => {
         const totalPages = Math.ceil(totalResults / limit);
 
         result = {
-            data: news,
+            news: news,
             page,
             limit,
             totalPages,
@@ -56,7 +56,7 @@ const queryNews = async (filter, options) => {
         const news = await News.find(filter).sort(sort).limit(limit).exec();
 
         result = {
-            data: news
+            news: news
         };
     }
 
@@ -82,8 +82,8 @@ const getLatestNews = async () => {
     const result = await queryNews(latestFilter, latestOptions);
 
     return {
-        ...result,
-        data: result.data || [] // Default to empty array if `data` is undefined
+        ...result || [],
+        // news: result.data || [] // Default to empty array if `data` is undefined
     };
 };
 
