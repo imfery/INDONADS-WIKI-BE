@@ -29,7 +29,7 @@ const getEventsSummary = catchAsync(async (req, res) => {
 const getEventById = catchAsync(async (req, res) => {
     const event = await eventService.getEventById(req.params.id);
     if (!event) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Event not found');
+        throw new ApiError(httpStatus.NOT_FOUND, 'Event not found');
     }
     res.send(successResponse(event));
 });
@@ -38,7 +38,7 @@ const updateEventById = catchAsync(async (req, res) => {
     const event = await eventService.updateEventById(req.params.id, req.body);
     res.send(successResponse(event));
 });
-  
+
 const deleteEventById = catchAsync(async (req, res) => {
     await eventService.deleteEventById(req.params.id);
     res.status(httpStatus.NO_CONTENT).send();
