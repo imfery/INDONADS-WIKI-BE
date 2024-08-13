@@ -29,15 +29,15 @@ const queryEvents = async (filter, options) => {
 
     const sort = { [sortField]: sortOrder };
 
+    const limit = options.limit || 10;
+    const page = options.page || 1;
+    const skip = (page - 1) * limit;
+
     const usePagination = options.limit !== undefined && options.page !== undefined;
 
     let result;
 
     if (usePagination) {
-        const limit = options.limit || 10;
-        const page = options.page || 1;
-        const skip = (page - 1) * limit;
-
         const events = await Event.find(filter)
             .sort(sort)
             .skip(skip)
@@ -48,14 +48,14 @@ const queryEvents = async (filter, options) => {
         const totalPages = Math.ceil(totalResults / limit);
 
         result = {
-            results: events,
+            events: events,
             page,
             limit,
             totalPages,
             totalResults
         };
     } else {
-        const events = await Event.find(filter).sort(sort).exec();
+        const events = await Event.find(filter).sort(sort).limit(limit).exec() || [];
 
         result = events;
     }
@@ -92,7 +92,7 @@ const getConcludedEvents = async () => {
     const now = new Date();
 
     const concludedFilter = {
-        date: { $lt: now } // Past events
+        date: { $lt: now } 
     };
     const concludedOptions = {
         limit: CONCLUDED_EVENTS_COUNT,
