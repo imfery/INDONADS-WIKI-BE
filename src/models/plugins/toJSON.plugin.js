@@ -14,14 +14,16 @@ const deleteAtPath = (obj, path, index) => {
     deleteAtPath(obj[path[index]], path, index + 1);
 };
 
-const toJSON = (schema) => {
-    let transform;
+const toJSON = (schema, options = {}) => {
+    const { transformations = [] } = options;
+
+    let existingTransform;
     if (schema.options.toJSON && schema.options.toJSON.transform) {
-        transform = schema.options.toJSON.transform;
+        existingTransform = schema.options.toJSON.transform;
     }
 
     schema.options.toJSON = Object.assign(schema.options.toJSON || {}, {
-        transform(doc, ret, options) {
+        transform(doc, ret, opts) {
             Object.keys(schema.paths).forEach((path) => {
                 if (schema.paths[path].options && schema.paths[path].options.private) {
                     deleteAtPath(ret, path.split('.'), 0);
@@ -29,13 +31,19 @@ const toJSON = (schema) => {
             });
 
             ret.id = ret._id.toString();
+            transformations.forEach(({ fieldKey, transformFn }) => {
+                if (fieldKey && transformFn && ret[fieldKey] !== undefined) {
+                    ret[fieldKey] = transformFn(ret[fieldKey]);
+                }
+            });
             delete ret._id;
             delete ret.__v;
             delete ret.createdAt;
             delete ret.updatedAt;
-            if (transform) {
-                return transform(doc, ret, options);
+            if (existingTransform) {
+                return existingTransform(doc, ret, opts);
             }
+            return ret;
         },
     });
 };

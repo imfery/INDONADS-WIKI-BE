@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
+const formatDate = require('../utils/utils')
 
 const eventSchema = new mongoose.Schema({
     title: {
@@ -29,8 +30,11 @@ const eventSchema = new mongoose.Schema({
 
 // Index the date field for better sorting performance
 eventSchema.index({ date: 1 });
-
-eventSchema.plugin(toJSON);
+eventSchema.plugin(toJSON, {
+    transformations: [
+        { fieldKey: 'date', transformFn: formatDate },
+    ],
+});
 eventSchema.plugin(paginate);
 
 const Event = mongoose.model('Event', eventSchema);
