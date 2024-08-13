@@ -2,7 +2,7 @@ const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
 const eventValidation = require('../../validations/events.validation');
-const eventController = require('../../controllers/events');
+const eventController = require('../../controllers/events.controller');
 const catchAsync = require('../../utils/catchAsync');
 
 const router = express.Router();
