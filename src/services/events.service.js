@@ -9,8 +9,8 @@ const { UPCOMING_EVENTS_COUNT, CONCLUDED_EVENTS_COUNT } = require('../constants/
  * @returns {Promise<Event>}
  */
 
-const createEvent = async (userBody) => {
-    return Event.create(userBody);
+const createEvent = async (eventBody) => {
+    return Event.create(eventBody);
 };
 
 /**

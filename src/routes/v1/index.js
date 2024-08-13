@@ -3,6 +3,7 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const eventsRoute = require('./events.route')
+const newsRoute = require('./news.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -20,6 +21,10 @@ const defaultRoutes = [
         path: '/events',
         route: eventsRoute,
     },
+    {
+        path: '/news',
+        route: newsRoute,
+    }
 ];
 
 const devRoutes = [
