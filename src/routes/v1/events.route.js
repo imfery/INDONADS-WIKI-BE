@@ -8,20 +8,20 @@ const catchAsync = require('../../utils/catchAsync');
 const router = express.Router();
 
 router
-	.route('/')
-	.post(auth('manageEvents'), validate(eventValidation.createEvent), eventController.createEvent)
-	.get(validate(eventValidation.getEvents), eventController.getEvents);
+    .route('/')
+    .post(auth('manageEvents'), validate(eventValidation.createEvent), eventController.createEvent)
+    .get(validate(eventValidation.getEvents), eventController.getEvents);
 
 router
-	.route('/summary')
-	.get(validate(eventController.getEventsSummary), catchAsync(eventController.getEventsSummary));
+    .route('/summary')
+    .get(validate(eventController.getEventsSummary), catchAsync(eventController.getEventsSummary));
 
 router
-	.route('/detail/:id')
-	.get(validate(eventValidation.getEventById), eventController.getEventById)
-	.patch(auth('manageEvents'), validate(eventValidation.updateEventById), eventController.updateEventById)
-	.delete(auth('manageEvents'), validate(eventValidation.deleteEventById), eventController.deleteEventById);
-	  
+    .route('/detail/:id')
+    .get(validate(eventValidation.getEventById), eventController.getEventById)
+    .patch(auth('manageEvents'), validate(eventValidation.updateEventById), eventController.updateEventById)
+    .delete(auth('manageEvents'), validate(eventValidation.deleteEventById), eventController.deleteEventById);
+
 module.exports = router;
 
 /**
