@@ -1,39 +1,40 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const formatDate = require('../utils/utils')
+const formatDate = require('../utils/utils');
 
-const eventSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        trim: true
+const eventSchema = new mongoose.Schema(
+    {
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        description: {
+            type: String,
+            trim: true,
+        },
+        date: {
+            type: Date,
+            required: true,
+        },
+        location: {
+            type: String,
+            trim: true,
+        },
+        image: {
+            type: String,
+            trim: true,
+        },
     },
-    description: {
-        type: String,
-        trim: true
-    },
-    date: {
-        type: Date,
-        required: true
-    },
-    location: {
-        type: String,
-        trim: true
-    },
-    image: {
-        type: String,
-        trim: true
+    {
+        timestamps: true,
     }
-}, {
-    timestamps: true
-});
+);
 
 // Index the date field for better sorting performance
 eventSchema.index({ date: 1 });
 eventSchema.plugin(toJSON, {
-    transformations: [
-        { fieldKey: 'date', transformFn: formatDate },
-    ],
+    transformations: [{ fieldKey: 'date', transformFn: formatDate }],
 });
 eventSchema.plugin(paginate);
 

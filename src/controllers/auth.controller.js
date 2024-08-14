@@ -12,11 +12,34 @@ const login = catchAsync(async (req, res) => {
     const { email, password } = req.body;
     const user = await authService.loginUserWithEmailAndPassword(email, password);
     const tokens = await tokenService.generateAuthTokens(user);
+    res.cookie('accessToken', tokens.access.token, {
+        httpOnly: true,
+        secure: false, // CHANGE TO process.env.NODE_ENV === 'production' LATER
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+        sameSite: 'strict',
+    });
+
+    res.cookie('refreshToken', tokens.refresh.token, {
+        httpOnly: true,
+        secure: false, // CHANGE TO process.env.NODE_ENV === 'production' LATER
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+        sameSite: 'strict',
+    });
     res.send({ user, tokens });
 });
 
 const logout = catchAsync(async (req, res) => {
-    await authService.logout(req.body.refreshToken);
+    const refreshToken = req.cookies ? req.cookies.refreshToken : undefined;
+
+    if (!refreshToken) {
+        return res.status(httpStatus.UNAUTHORIZED).send({ message: 'Refresh token not found' });
+    }
+
+    await authService.logout(refreshToken);
+
+    res.clearCookie('accessToken', { path: '/' });
+    res.clearCookie('refreshToken', { path: '/' });
+
     res.status(httpStatus.NO_CONTENT).send();
 });
 
