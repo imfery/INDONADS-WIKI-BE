@@ -12,9 +12,7 @@ router
     .post(auth('manageNews'), validate(newsValidation.createNews), catchAsync(newsController.createNews))
     .get(validate(newsValidation.getNews), catchAsync(newsController.getNews));
 
-router
-    .route('/latest')
-    .get(validate(newsValidation.getLatestNews), catchAsync(newsController.getLatestNews));
+router.route('/latest').get(validate(newsValidation.getLatestNews), catchAsync(newsController.getLatestNews));
 
 router
     .route('/:id')
@@ -176,7 +174,7 @@ module.exports = router;
  *                   type: string
  *                 message:
  *                   type: string
- * 
+ *
  *   patch:
  *     summary: Update a specific news item
  *     description: Update the details of a specific news item by ID.
@@ -224,7 +222,7 @@ module.exports = router;
  *                   type: string
  *                 message:
  *                   type: string
- * 
+ *
  *   delete:
  *     summary: Delete a specific news item
  *     description: Remove a news item by ID.
@@ -260,7 +258,7 @@ module.exports = router;
  *                   type: string
  *                 message:
  *                   type: string
- * 
+ *
  * @swagger
  * components:
  *   schemas:
