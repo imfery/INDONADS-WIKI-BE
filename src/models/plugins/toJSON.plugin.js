@@ -2,8 +2,9 @@
 
 /**
  * A mongoose schema plugin which applies the following in the toJSON transform call:
- *  - removes __v, createdAt, updatedAt, and any path that has private: true
+ *  - removes __v, and any path that has private: true
  *  - replaces _id with id
+ *  - optionally removes or includes specified fields based on options
  */
 
 const deleteAtPath = (obj, path, index) => {
@@ -15,7 +16,7 @@ const deleteAtPath = (obj, path, index) => {
 };
 
 const toJSON = (schema, options = {}) => {
-    const { transformations = [] } = options;
+    const { transformations = [], showHiddenField = {} } = options;
 
     let existingTransform;
     if (schema.options.toJSON && schema.options.toJSON.transform) {
@@ -31,15 +32,25 @@ const toJSON = (schema, options = {}) => {
             });
 
             ret.id = ret._id.toString();
+
+            // Apply transformations
             transformations.forEach(({ fieldKey, transformFn }) => {
                 if (fieldKey && transformFn && ret[fieldKey] !== undefined) {
                     ret[fieldKey] = transformFn(ret[fieldKey]);
                 }
             });
+
+            // Conditionally include hidden fields
+            if (!showHiddenField.createdAt) {
+                delete ret.createdAt;
+            }
+            if (!showHiddenField.updatedAt) {
+                delete ret.updatedAt;
+            }
+
             delete ret._id;
             delete ret.__v;
-            delete ret.createdAt;
-            delete ret.updatedAt;
+
             if (existingTransform) {
                 return existingTransform(doc, ret, opts);
             }
