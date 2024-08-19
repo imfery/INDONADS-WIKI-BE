@@ -20,11 +20,8 @@ const getEvents = catchAsync(async (req, res) => {
 const getEventsSummary = catchAsync(async (req, res) => {
     const eventsSummary = await eventService.getEventsSummary();
 
-    res.status(httpStatus.OK).send(
-        successResponse(eventsSummary)
-    )
+    res.status(httpStatus.OK).send(successResponse(eventsSummary));
 });
-
 
 const getEventById = catchAsync(async (req, res) => {
     const event = await eventService.getEventById(req.params.id);

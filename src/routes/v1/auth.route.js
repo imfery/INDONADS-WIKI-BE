@@ -3,10 +3,11 @@ const validate = require('../../middlewares/validate');
 const authValidation = require('../../validations/auth.validation');
 const authController = require('../../controllers/auth.controller');
 const auth = require('../../middlewares/auth');
+const catchAsync = require('../../utils/catchAsync');
 
 const router = express.Router();
 
-router.post('/register', validate(authValidation.register), authController.register);
+router.route('/register').post(validate(authValidation.register), authController.register);
 router.post('/login', validate(authValidation.login), authController.login);
 router.post('/logout', validate(authValidation.logout), authController.logout);
 router.post('/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshTokens);
@@ -14,6 +15,9 @@ router.post('/forgot-password', validate(authValidation.forgotPassword), authCon
 router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
 router.post('/send-verification-email', auth(), authController.sendVerificationEmail);
 router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
+router.post('/validate', catchAsync(auth()), catchAsync(authController.validateToken), (req, res) => {
+    res.status(200).json({ message: 'User validated', user: req.user });
+});
 
 module.exports = router;
 

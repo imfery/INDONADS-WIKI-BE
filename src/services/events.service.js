@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const { Event } = require('../models');
 const ApiError = require('../utils/ApiError');
-const { UPCOMING_EVENTS_COUNT, CONCLUDED_EVENTS_COUNT } = require('../constants/index')
+const { UPCOMING_EVENTS_COUNT, CONCLUDED_EVENTS_COUNT } = require('../constants/index');
 
 /**
  * Create an event
@@ -38,31 +38,26 @@ const queryEvents = async (filter, options) => {
     let result;
 
     if (usePagination) {
-        const events = await Event.find(filter)
-            .sort(sort)
-            .skip(skip)
-            .limit(limit)
-            .exec();
+        const events = await Event.find(filter).sort(sort).skip(skip).limit(limit).exec();
 
         const totalResults = await Event.countDocuments(filter).exec();
         const totalPages = Math.ceil(totalResults / limit);
 
         result = {
-            events: events,
+            events,
             page,
             limit,
             totalPages,
-            totalResults
+            totalResults,
         };
     } else {
-        const events = await Event.find(filter).sort(sort).limit(limit).exec() || [];
+        const events = (await Event.find(filter).sort(sort).limit(limit).exec()) || [];
 
         result = events;
     }
 
     return result;
 };
-
 
 /**
  * Fetch upcoming events
@@ -73,7 +68,7 @@ const getUpcomingEvents = async () => {
     const now = new Date();
 
     const upcomingFilter = {
-        date: { $gte: now }
+        date: { $gte: now },
     };
     const upcomingOptions = {
         limit: UPCOMING_EVENTS_COUNT,
@@ -84,15 +79,15 @@ const getUpcomingEvents = async () => {
 };
 
 /**
-* Fetch concluded events
-* @param {Object} [options] -
-* @returns {Promise<Object>} -
-*/
+ * Fetch concluded events
+ * @param {Object} [options] -
+ * @returns {Promise<Object>} -
+ */
 const getConcludedEvents = async () => {
     const now = new Date();
 
     const concludedFilter = {
-        date: { $lt: now }
+        date: { $lt: now },
     };
     const concludedOptions = {
         limit: CONCLUDED_EVENTS_COUNT,
@@ -103,21 +98,17 @@ const getConcludedEvents = async () => {
 };
 
 /**
-* Fetch both upcoming and concluded events
-* @returns {Promise<Object>}
-*/
+ * Fetch both upcoming and concluded events
+ * @returns {Promise<Object>}
+ */
 const getEventsSummary = async () => {
-    const [upcomingEvents, concludedEvents] = await Promise.all([
-        getUpcomingEvents(),
-        getConcludedEvents()
-    ]);
+    const [upcomingEvents, concludedEvents] = await Promise.all([getUpcomingEvents(), getConcludedEvents()]);
 
     return {
         upcomingEvents,
-        concludedEvents
+        concludedEvents,
     };
 };
-
 
 /**
  * Get event by id
@@ -158,12 +149,11 @@ const deleteEventById = async (id) => {
     return event;
 };
 
-
 module.exports = {
     createEvent,
     queryEvents,
     getEventById,
     updateEventById,
     deleteEventById,
-    getEventsSummary
-};  
+    getEventsSummary,
+};

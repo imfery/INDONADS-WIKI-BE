@@ -12,9 +12,7 @@ router
     .post(auth('manageEvents'), validate(eventValidation.createEvent), eventController.createEvent)
     .get(validate(eventValidation.getEvents), eventController.getEvents);
 
-router
-    .route('/summary')
-    .get(validate(eventController.getEventsSummary), catchAsync(eventController.getEventsSummary));
+router.route('/summary').get(validate(eventController.getEventsSummary), catchAsync(eventController.getEventsSummary));
 
 router
     .route('/detail/:id')
@@ -161,7 +159,6 @@ module.exports = router;
  *                   description: Error message
  */
 
-
 /**
  * @swagger
  * /events/detail/{id}:
@@ -193,7 +190,7 @@ module.exports = router;
  *                   type: string
  *                 message:
  *                   type: string
- * 
+ *
  *   patch:
  *     summary: Update a specific event
  *     description: Update the details of a specific event by ID.
@@ -241,7 +238,7 @@ module.exports = router;
  *                   type: string
  *                 message:
  *                   type: string
- * 
+ *
  *   delete:
  *     summary: Delete a specific event
  *     description: Remove an event by ID.
@@ -299,13 +296,17 @@ module.exports = router;
  *         location:
  *           type: string
  *           description: The location of the event
- *         image:
+ *         category:
  *           type: string
- *           description: URL or path to the event image
+ *           description: The category of the event
+ *           enum:
+ *             - Podcast
+ *             - Meetup
+ *             - Conference
  *       required:
  *         - title
  *         - description
  *         - date
  *         - location
- *         - image
+ *         - category
  */

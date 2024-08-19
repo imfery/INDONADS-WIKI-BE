@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const formatDate = require('../utils/utils');
+const { formatDate, formatDateTime } = require('../utils/utils');
 
 const eventSchema = new mongoose.Schema(
     {
@@ -21,9 +21,10 @@ const eventSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
-        image: {
+        category: {
             type: String,
-            trim: true,
+            required: true,
+            enum: ['Podcast', 'Meetup', 'Conference'], // Add other categories as needed
         },
     },
     {
@@ -33,9 +34,15 @@ const eventSchema = new mongoose.Schema(
 
 // Index the date field for better sorting performance
 eventSchema.index({ date: 1 });
+
 eventSchema.plugin(toJSON, {
-    transformations: [{ fieldKey: 'date', transformFn: formatDate }],
+    transformations: [
+        { fieldKey: 'date', transformFn: formatDate },
+        { fieldKey: 'createdAt', transformFn: formatDateTime },
+    ],
+    showHiddenField: { createdAt: true },
 });
+
 eventSchema.plugin(paginate);
 
 const Event = mongoose.model('Event', eventSchema);

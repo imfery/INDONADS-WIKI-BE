@@ -1,6 +1,9 @@
+/* eslint-disable no-console */
 const httpStatus = require('http-status');
+const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService, emailService } = require('../services');
+const ApiError = require('../utils/ApiError');
 
 const register = catchAsync(async (req, res) => {
     const user = await userService.createUser(req.body);
@@ -12,33 +15,17 @@ const login = catchAsync(async (req, res) => {
     const { email, password } = req.body;
     const user = await authService.loginUserWithEmailAndPassword(email, password);
     const tokens = await tokenService.generateAuthTokens(user);
-    res.cookie('accessToken', tokens.access.token, {
-        httpOnly: true,
-        secure: false, // CHANGE TO process.env.NODE_ENV === 'production' LATER
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-        sameSite: 'strict',
-    });
-
-    res.cookie('refreshToken', tokens.refresh.token, {
-        httpOnly: true,
-        secure: false, // CHANGE TO process.env.NODE_ENV === 'production' LATER
-        maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-        sameSite: 'strict',
-    });
     res.send({ user, tokens });
 });
 
 const logout = catchAsync(async (req, res) => {
-    const refreshToken = req.cookies ? req.cookies.refreshToken : undefined;
+    const { refreshToken } = req.body;
 
     if (!refreshToken) {
         return res.status(httpStatus.UNAUTHORIZED).send({ message: 'Refresh token not found' });
     }
 
     await authService.logout(refreshToken);
-
-    res.clearCookie('accessToken', { path: '/' });
-    res.clearCookie('refreshToken', { path: '/' });
 
     res.status(httpStatus.NO_CONTENT).send();
 });
@@ -47,6 +34,28 @@ const refreshTokens = catchAsync(async (req, res) => {
     const tokens = await authService.refreshAuth(req.body.refreshToken);
     res.send({ ...tokens });
 });
+
+const validateToken = async (req, res, next) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Authorization header is required');
+        }
+
+        const accessToken = authHeader.split(' ')[1];
+        if (!accessToken) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Access token is required');
+        }
+
+        const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+
+        req.user = decoded;
+
+        next();
+    } catch (error) {
+        next(new ApiError(httpStatus.UNAUTHORIZED, 'Invalid or expired token'));
+    }
+};
 
 const forgotPassword = catchAsync(async (req, res) => {
     const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
@@ -79,4 +88,5 @@ module.exports = {
     resetPassword,
     sendVerificationEmail,
     verifyEmail,
+    validateToken,
 };
