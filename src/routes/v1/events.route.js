@@ -296,13 +296,17 @@ module.exports = router;
  *         location:
  *           type: string
  *           description: The location of the event
- *         image:
+ *         category:
  *           type: string
- *           description: URL or path to the event image
+ *           description: The category of the event
+ *           enum:
+ *             - Podcast
+ *             - Meetup
+ *             - Conference
  *       required:
  *         - title
  *         - description
  *         - date
  *         - location
- *         - image
+ *         - category
  */
