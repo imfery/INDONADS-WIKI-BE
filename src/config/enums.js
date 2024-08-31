@@ -6,4 +6,4 @@ module.exports = {
     NEWS_TAGS,
     NEWS_CATEGORIES,
     DEFAULT_URL,
-}
+};

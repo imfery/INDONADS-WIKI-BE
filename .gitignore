@@ -15,3 +15,6 @@ seeds_data
 
 # debugger purpose
 .vscode
+
+# gcs key
+gcsKey.json

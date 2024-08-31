@@ -48,6 +48,7 @@
         "prettier"
     ],
     "dependencies": {
+        "@google-cloud/storage": "^7.12.1",
         "bcryptjs": "^2.4.3",
         "compression": "^1.7.4",
         "cookie-parser": "^1.4.6",
@@ -64,6 +65,7 @@
         "moment": "^2.24.0",
         "mongoose": "^5.7.7",
         "morgan": "^1.9.1",
+        "multer": "1.4.5-lts.1",
         "nodemailer": "^6.3.1",
         "passport": "^0.7.0",
         "passport-jwt": "^4.0.0",
@@ -71,6 +73,7 @@
         "react-hook-form": "^7.52.2",
         "swagger-jsdoc": "^6.0.8",
         "swagger-ui-express": "^4.1.6",
+        "uuid": "^10.0.0",
         "validator": "^13.0.0",
         "winston": "^3.2.1",
         "xss-clean": "^0.1.1"
