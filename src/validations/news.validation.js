@@ -1,16 +1,30 @@
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
-const { NEWS_TAGS, NEWS_CATEGORIES } = require('../config/enums');
-const LATEST_NEWS_COUNT = require('../constants/index')
+const { NEWS_CATEGORIES } = require('../config/enums');
+const LATEST_NEWS_COUNT = require('../constants/index');
+
+const validateContentBlocks = (value, helpers) => {
+    try {
+        const content = JSON.parse(value);
+        if (!content.blocks || content.blocks.length === 0) {
+            return helpers.error('any.invalid');
+        }
+        return value;
+    } catch (e) {
+        return helpers.error('any.invalid');
+    }
+};
 
 const createNews = {
     body: Joi.object().keys({
         title: Joi.string().required().trim(),
         summary: Joi.string().required().trim(),
-        content: Joi.string().required(),
-        coverImageUrl: Joi.string().uri().required().trim(),
-        tags: Joi.array().items(Joi.string().valid(...NEWS_TAGS)),
-        category: Joi.string().valid(...NEWS_CATEGORIES).required().trim(),
+        content: Joi.string().required().custom(validateContentBlocks, 'Content blocks validation'),
+        category: Joi.string()
+            .valid(...NEWS_CATEGORIES)
+            .required()
+            .trim(),
+        isActive: Joi.boolean(),
     }),
 };
 
@@ -43,10 +57,11 @@ const updateNewsById = {
         .keys({
             title: Joi.string().trim(),
             summary: Joi.string().trim(),
-            content: Joi.string(),
-            coverImageUrl: Joi.string().uri().trim(),
-            tags: Joi.array().items(Joi.string().valid(...NEWS_TAGS)),
-            category: Joi.string().valid(...NEWS_CATEGORIES).trim(),
+            content: Joi.string().required().custom(validateContentBlocks, 'Content blocks validation'),
+            category: Joi.string()
+                .valid(...NEWS_CATEGORIES)
+                .trim(),
+            isActive: Joi.boolean(),
         })
         .min(1),
 };

@@ -1,12 +1,30 @@
 const httpStatus = require('http-status');
+const jwt = require('jsonwebtoken'); // Import jwt
 const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { newsService } = require('../services');
+const { newsService, userService } = require('../services');
 const { successResponse } = require('./custom.controller');
 
 const createNews = catchAsync(async (req, res) => {
-    const news = await newsService.createNews(req.body);
+    const token = req.headers.authorization.split(' ')[1];
+
+    const decodedToken = jwt.decode(token);
+    const userId = decodedToken.sub;
+
+    const user = await userService.getUserById(userId);
+
+    if (!user) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'User not found');
+    }
+
+    const newsData = {
+        ...req.body,
+        createdBy: user.email,
+        updatedBy: user.email,
+    };
+
+    const news = await newsService.createNews(newsData);
     res.status(httpStatus.CREATED).send(successResponse(news));
 });
 
@@ -36,7 +54,24 @@ const getNewsById = catchAsync(async (req, res) => {
 });
 
 const updateNewsById = catchAsync(async (req, res) => {
-    const news = await newsService.updateNewsById(req.params.id, req.body);
+    const token = req.headers.authorization.split(' ')[1];
+
+    const decodedToken = jwt.decode(token);
+    const userId = decodedToken.sub;
+
+    const user = await userService.getUserById(userId);
+
+    if (!user) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'User not found');
+    }
+
+    // Prepare the update data with the user's ID for the updatedBy field
+    const newsData = {
+        ...req.body,
+        updatedBy: user.email,
+    };
+
+    const news = await newsService.updateNewsById(req.params.id, newsData);
     res.send(successResponse(news));
 });
 
