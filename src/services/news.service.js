@@ -23,47 +23,42 @@ const createNews = async (newsBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryNews = async (filter, options) => {
-    const sortField = options.sortField || 'createdAt';
+    const sortField = options.sortField || 'updatedAt'; // Default to 'updatedAt'
     const sortOrder = options.sortBy === 'desc' ? -1 : 1;
 
     const sort = { [sortField]: sortOrder };
-    const limit = options.limit || 10;
 
-    const usePagination = options.limit !== undefined && options.page !== undefined;
+    const limit = options.limit || 10;
     const page = options.page || 1;
     const skip = (page - 1) * limit;
+
+    const usePagination = options.limit !== undefined && options.page !== undefined;
 
     let result;
 
     if (usePagination) {
-        const news = await News.find(filter)
-            .sort(sort)
-            .skip(skip)
-            .limit(limit)
-            .exec();
+        const news = await News.find(filter).sort(sort).skip(skip).limit(limit).exec();
 
         const totalResults = await News.countDocuments(filter).exec();
         const totalPages = Math.ceil(totalResults / limit);
 
         result = {
-            news: news,
+            news,
             page,
             limit,
             totalPages,
-            totalResults
+            totalResults,
         };
     } else {
         const news = await News.find(filter).sort(sort).limit(limit).exec();
 
         result = {
-            news: news
+            news,
         };
     }
 
     return result;
 };
-
-
 
 /**
  * Fetch latest news
@@ -76,19 +71,16 @@ const getLatestNews = async () => {
     const latestOptions = {
         limit: LATEST_NEWS_COUNT,
         sortField: 'createdAt',
-        sortBy: 'desc'
+        sortBy: 'desc',
     };
 
     const result = await queryNews(latestFilter, latestOptions);
 
     return {
-        ...result || [],
+        ...(result || []),
         // news: result.data || [] // Default to empty array if `data` is undefined
     };
 };
-
-
-
 
 /**
  * Fetch news by ID
@@ -139,5 +131,5 @@ module.exports = {
     getLatestNews,
     getNewsById,
     updateNewsById,
-    deleteNewsById
+    deleteNewsById,
 };

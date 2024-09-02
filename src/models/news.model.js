@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const { DEFAULT_URL, NEWS_TAGS, NEWS_CATEGORIES } = require('../config/enums');
+const { NEWS_CATEGORIES } = require('../config/enums');
+const { formatDateTime } = require('../utils/utils');
 
 const newsSchema = new mongoose.Schema(
     {
@@ -18,22 +19,25 @@ const newsSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        coverImageUrl: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        tags: [
-            {
-                type: String,
-                enum: NEWS_TAGS,
-            },
-        ],
         category: {
             type: String,
             enum: NEWS_CATEGORIES,
             required: true,
             trim: true,
+        },
+        isActive: {
+            type: Boolean,
+            default: true,
+        },
+        createdBy: {
+            // Ensure these fields are defined
+            type: String,
+            required: true,
+        },
+        updatedBy: {
+            // Ensure these fields are defined
+            type: String,
+            required: true,
         },
     },
     {
@@ -43,23 +47,11 @@ const newsSchema = new mongoose.Schema(
     }
 );
 
-newsSchema.virtual('url').get(function () {
-    const titleSlug = this.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
-    return `${DEFAULT_URL}/news/${titleSlug}-${this._id}`;
-});
-
-newsSchema.pre('save', function (next) {
-    if (!this.content || this.content.trim().length === 0) {
-        return next(new Error('Content cannot be empty'));
-    }
-    next();
-});
-
-newsSchema.plugin(toJSON);
 newsSchema.plugin(paginate);
+newsSchema.plugin(toJSON, {
+    transformations: [{ fieldKey: 'createdAt', transformFn: formatDateTime }],
+    showHiddenField: { createdAt: true },
+});
 
 const News = mongoose.model('News', newsSchema);
 

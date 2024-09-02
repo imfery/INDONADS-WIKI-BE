@@ -2,9 +2,10 @@ const express = require('express');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
-const eventsRoute = require('./events.route')
+const eventsRoute = require('./events.route');
 const newsRoute = require('./news.route');
 const config = require('../../config/config');
+const uploadRoute = require('./upload.route');
 
 const router = express.Router();
 
@@ -24,7 +25,11 @@ const defaultRoutes = [
     {
         path: '/news',
         route: newsRoute,
-    }
+    },
+    {
+        path: '/upload',
+        route: uploadRoute,
+    },
 ];
 
 const devRoutes = [

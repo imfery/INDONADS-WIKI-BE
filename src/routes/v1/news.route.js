@@ -24,13 +24,6 @@ module.exports = router;
 
 /**
  * @swagger
- * tags:
- *   name: News
- *   description: News management and retrieval
- */
-
-/**
- * @swagger
  * /news:
  *   get:
  *     summary: Retrieve a list of news
@@ -93,7 +86,29 @@ module.exports = router;
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/News'
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The title of the news item
+ *               summary:
+ *                 type: string
+ *                 description: A brief summary of the news item
+ *               content:
+ *                 type: string
+ *                 description: Full content of the news item, stored as JSON blocks for Editor.js
+ *               category:
+ *                 type: string
+ *                 enum: [NewsCategoryEnumValues]
+ *                 description: Category of the news item
+ *               isActive:
+ *                 type: boolean
+ *                 description: Is the news item active
+ *             required:
+ *               - title
+ *               - summary
+ *               - content
+ *               - category
  *     responses:
  *       '201':
  *         description: News item created successfully
@@ -258,7 +273,9 @@ module.exports = router;
  *                   type: string
  *                 message:
  *                   type: string
- *
+ */
+
+/**
  * @swagger
  * components:
  *   schemas:
@@ -273,32 +290,29 @@ module.exports = router;
  *           description: A brief summary of the news item
  *         content:
  *           type: string
- *           description: Full content of the news item, with formatting
- *         coverImageUrl:
- *           type: string
- *           description: URL or path to the cover image of the news item
- *         tags:
- *           type: array
- *           items:
- *             type: string
- *             enum: [NewsTagEnumValues]
- *           description: Tags associated with the news item
+ *           description: Full content of the news item, stored as JSON blocks for Editor.js
  *         category:
  *           type: string
  *           enum: [NewsCategoryEnumValues]
  *           description: Category of the news item
+ *         isActive:
+ *           type: boolean
+ *           description: Is the news item active
+ *         createdBy:
+ *           type: string
+ *           description: The ID of the user who created the news item
+ *         updatedBy:
+ *           type: string
+ *           description: The ID of the user who last updated the news item
  *       required:
  *         - title
  *         - summary
  *         - content
- *         - coverImageUrl
- *         - tags
  *         - category
  *       example:
  *         title: "Breaking News"
  *         summary: "Summary of the breaking news"
- *         content: "Full content of the breaking news"
- *         coverImageUrl: "http://example.com/image.jpg"
- *         tags: ["Breaking", "Urgent"]
+ *         content: "[{\"type\":\"header\",\"data\":{\"text\":\"Breaking News\",\"level\":2}}]"
  *         category: "Politics"
+ *         isActive: false
  */
