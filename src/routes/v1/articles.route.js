@@ -13,8 +13,8 @@ router
     .get(validate(articlesValidation.getArticles), catchAsync(articlesController.getArticles));
 
 router
-    .route('/latest')
-    .get(validate(articlesValidation.getLatestArticles), catchAsync(articlesController.getLatestArticles));
+    .route('/fetchActiveArticles')
+    .get(validate(articlesValidation.getActiveArticles), catchAsync(articlesController.getActiveArticles));
 
 router
     .route('/:id')
@@ -274,6 +274,71 @@ module.exports = router;
  *                   type: string
  *       '404':
  *         description: Articles item not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ */
+
+/**
+ * @swagger
+ * /articles/fetchActiveArticles:
+ *   get:
+ *     summary: Retrieve a list of active articles
+ *     description: Get a list of all articles with isActive set to true. Only `title`, `summary`, `category`, and `createdBy` fields are returned.
+ *     tags: [Articles]
+ *     parameters:
+ *       - in: query
+ *         name: sortField
+ *         schema:
+ *           type: string
+ *           default: createdAt
+ *           description: Field to sort by
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           default: desc
+ *           description: Sort order (either 'asc' or 'desc')
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *           description: Maximum number of articles items
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *           description: Page number
+ *     responses:
+ *       '200':
+ *         description: A list of active articles items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   title:
+ *                     type: string
+ *                   summary:
+ *                     type: string
+ *                   category:
+ *                     type: string
+ *                   createdBy:
+ *                     type: string
+ *       '404':
+ *         description: No articles found
  *         content:
  *           application/json:
  *             schema:

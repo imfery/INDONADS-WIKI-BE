@@ -125,6 +125,35 @@ const deleteArticlesById = async (id) => {
     return articlesItem;
 };
 
+const queryActiveArticles = async (options) => {
+    const filter = { isActive: true }; // Filter only active articles
+    const sortField = options.sortField || 'createdAt'; // Default sort field is 'createdAt'
+    const sortOrder = options.sortBy === 'desc' ? -1 : 1;
+
+    const sort = { [sortField]: sortOrder };
+    const limit = options.limit || 5;
+    const page = options.page || 1;
+    const skip = (page - 1) * limit;
+
+    const articles = await Articles.find(filter)
+        .select('title summary category createdBy createdAt')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .exec();
+
+    const totalResults = await Articles.countDocuments(filter).exec();
+    const totalPages = Math.ceil(totalResults / limit);
+
+    return {
+        articles,
+        page,
+        limit,
+        totalPages,
+        totalResults,
+    };
+};
+
 module.exports = {
     createArticles,
     queryArticles,
@@ -132,4 +161,5 @@ module.exports = {
     getArticlesById,
     updateArticlesById,
     deleteArticlesById,
+    queryActiveArticles,
 };

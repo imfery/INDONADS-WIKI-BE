@@ -57,7 +57,7 @@ const updateArticlesById = {
         .keys({
             title: Joi.string().trim(),
             summary: Joi.string().trim(),
-            content: Joi.string().required().custom(validateContentBlocks, 'Content blocks validation'),
+            content: Joi.string().custom(validateContentBlocks, 'Content blocks validation'),
             category: Joi.string()
                 .valid(...ARTICLES_CATEGORIES)
                 .trim(),
@@ -72,6 +72,15 @@ const deleteArticlesById = {
     }),
 };
 
+const getActiveArticles = {
+    query: Joi.object().keys({
+        sortField: Joi.string(),
+        sortBy: Joi.string(),
+        limit: Joi.number().integer(),
+        page: Joi.number().integer(),
+    }),
+};
+
 module.exports = {
     createArticles,
     getArticles,
@@ -79,4 +88,5 @@ module.exports = {
     getArticlesById,
     updateArticlesById,
     deleteArticlesById,
+    getActiveArticles,
 };

@@ -80,6 +80,12 @@ const deleteArticlesById = catchAsync(async (req, res) => {
     res.status(httpStatus.NO_CONTENT).send();
 });
 
+const getActiveArticles = catchAsync(async (req, res) => {
+    const options = pick(req.query, ['sortField', 'sortBy', 'limit', 'page']);
+    const result = await articlesService.queryActiveArticles(options);
+    res.send(successResponse(result));
+});
+
 module.exports = {
     createArticles,
     getArticles,
@@ -87,4 +93,5 @@ module.exports = {
     updateArticlesById,
     deleteArticlesById,
     getLatestArticles,
+    getActiveArticles,
 };
