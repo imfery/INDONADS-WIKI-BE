@@ -1,34 +1,44 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
-const newsValidation = require('../../validations/news.validation');
-const newsController = require('../../controllers/news.controller');
+const articlesValidation = require('../../validations/articles.validation');
+const articlesController = require('../../controllers/articles.controller');
 const catchAsync = require('../../utils/catchAsync');
 
 const router = express.Router();
 
 router
     .route('/')
-    .post(auth('manageNews'), validate(newsValidation.createNews), catchAsync(newsController.createNews))
-    .get(validate(newsValidation.getNews), catchAsync(newsController.getNews));
+    .post(auth('manageArticles'), validate(articlesValidation.createArticles), catchAsync(articlesController.createArticles))
+    .get(validate(articlesValidation.getArticles), catchAsync(articlesController.getArticles));
 
-router.route('/latest').get(validate(newsValidation.getLatestNews), catchAsync(newsController.getLatestNews));
+router
+    .route('/latest')
+    .get(validate(articlesValidation.getLatestArticles), catchAsync(articlesController.getLatestArticles));
 
 router
     .route('/:id')
-    .get(validate(newsValidation.getNewsById), catchAsync(newsController.getNewsById))
-    .patch(auth('manageNews'), validate(newsValidation.updateNewsById), catchAsync(newsController.updateNewsById))
-    .delete(auth('manageNews'), validate(newsValidation.deleteNewsById), catchAsync(newsController.deleteNewsById));
+    .get(validate(articlesValidation.getArticlesById), catchAsync(articlesController.getArticlesById))
+    .patch(
+        auth('manageArticles'),
+        validate(articlesValidation.updateArticlesById),
+        catchAsync(articlesController.updateArticlesById)
+    )
+    .delete(
+        auth('manageArticles'),
+        validate(articlesValidation.deleteArticlesById),
+        catchAsync(articlesController.deleteArticlesById)
+    );
 
 module.exports = router;
 
 /**
  * @swagger
- * /news:
+ * /articles:
  *   get:
- *     summary: Retrieve a list of news
- *     description: Get a list of all news items.
- *     tags: [News]
+ *     summary: Retrieve a list of articles
+ *     description: Get a list of all articles items.
+ *     tags: [Articles]
  *     parameters:
  *       - in: query
  *         name: sortBy
@@ -42,7 +52,7 @@ module.exports = router;
  *           type: integer
  *           minimum: 1
  *           default: 10
- *           description: Maximum number of news items
+ *           description: Maximum number of articles items
  *       - in: query
  *         name: page
  *         schema:
@@ -52,15 +62,15 @@ module.exports = router;
  *           description: Page number
  *     responses:
  *       '200':
- *         description: A list of news items
+ *         description: A list of articles items
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/News'
+ *                 $ref: '#/components/schemas/Articles'
  *       '404':
- *         description: No news found
+ *         description: No articles found
  *         content:
  *           application/json:
  *             schema:
@@ -74,11 +84,11 @@ module.exports = router;
 
 /**
  * @swagger
- * /news:
+ * /articles:
  *   post:
- *     summary: Create a news item
- *     description: Only admins can create news items.
- *     tags: [News]
+ *     summary: Create a articles item
+ *     description: Only admins can create articles items.
+ *     tags: [Articles]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -90,20 +100,20 @@ module.exports = router;
  *             properties:
  *               title:
  *                 type: string
- *                 description: The title of the news item
+ *                 description: The title of the articles item
  *               summary:
  *                 type: string
- *                 description: A brief summary of the news item
+ *                 description: A brief summary of the articles item
  *               content:
  *                 type: string
- *                 description: Full content of the news item, stored as JSON blocks for Editor.js
+ *                 description: Full content of the articles item, stored as JSON blocks for Editor.js
  *               category:
  *                 type: string
- *                 enum: [NewsCategoryEnumValues]
- *                 description: Category of the news item
+ *                 enum: [ArticlesCategoryEnumValues]
+ *                 description: Category of the articles item
  *               isActive:
  *                 type: boolean
- *                 description: Is the news item active
+ *                 description: Is the articles item active
  *             required:
  *               - title
  *               - summary
@@ -111,11 +121,11 @@ module.exports = router;
  *               - category
  *     responses:
  *       '201':
- *         description: News item created successfully
+ *         description: Articles item created successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/News'
+ *               $ref: '#/components/schemas/Articles'
  *       '400':
  *         description: Invalid input
  *         content:
@@ -131,22 +141,22 @@ module.exports = router;
 
 /**
  * @swagger
- * /news/latest:
+ * /articles/latest:
  *   get:
- *     summary: Retrieve the latest news
- *     description: Get the latest news items.
- *     tags: [News]
+ *     summary: Retrieve the latest articles
+ *     description: Get the latest articles items.
+ *     tags: [Articles]
  *     responses:
  *       '200':
- *         description: A list of the latest news items
+ *         description: A list of the latest articles items
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/News'
+ *                 $ref: '#/components/schemas/Articles'
  *       '404':
- *         description: No news found
+ *         description: No articles found
  *         content:
  *           application/json:
  *             schema:
@@ -160,11 +170,11 @@ module.exports = router;
 
 /**
  * @swagger
- * /news/{id}:
+ * /articles/{id}:
  *   get:
- *     summary: Retrieve a specific news item
- *     description: Get details of a specific news item by ID.
- *     tags: [News]
+ *     summary: Retrieve a specific articles item
+ *     description: Get details of a specific articles item by ID.
+ *     tags: [Articles]
  *     parameters:
  *       - in: path
  *         name: id
@@ -173,13 +183,13 @@ module.exports = router;
  *           type: string
  *     responses:
  *       '200':
- *         description: A specific news item
+ *         description: A specific articles item
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/News'
+ *               $ref: '#/components/schemas/Articles'
  *       '404':
- *         description: News item not found
+ *         description: Articles item not found
  *         content:
  *           application/json:
  *             schema:
@@ -191,9 +201,9 @@ module.exports = router;
  *                   type: string
  *
  *   patch:
- *     summary: Update a specific news item
- *     description: Update the details of a specific news item by ID.
- *     tags: [News]
+ *     summary: Update a specific articles item
+ *     description: Update the details of a specific articles item by ID.
+ *     tags: [Articles]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -207,14 +217,14 @@ module.exports = router;
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/News'
+ *             $ref: '#/components/schemas/Articles'
  *     responses:
  *       '200':
- *         description: News item updated successfully
+ *         description: Articles item updated successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/News'
+ *               $ref: '#/components/schemas/Articles'
  *       '400':
  *         description: Invalid input
  *         content:
@@ -227,7 +237,7 @@ module.exports = router;
  *                 message:
  *                   type: string
  *       '404':
- *         description: News item not found
+ *         description: Articles item not found
  *         content:
  *           application/json:
  *             schema:
@@ -239,9 +249,9 @@ module.exports = router;
  *                   type: string
  *
  *   delete:
- *     summary: Delete a specific news item
- *     description: Remove a news item by ID.
- *     tags: [News]
+ *     summary: Delete a specific articles item
+ *     description: Remove a articles item by ID.
+ *     tags: [Articles]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -252,7 +262,7 @@ module.exports = router;
  *           type: string
  *     responses:
  *       '204':
- *         description: News item deleted successfully
+ *         description: Articles item deleted successfully
  *         content:
  *           application/json:
  *             schema:
@@ -263,7 +273,7 @@ module.exports = router;
  *                 message:
  *                   type: string
  *       '404':
- *         description: News item not found
+ *         description: Articles item not found
  *         content:
  *           application/json:
  *             schema:
@@ -279,40 +289,40 @@ module.exports = router;
  * @swagger
  * components:
  *   schemas:
- *     News:
+ *     Articles:
  *       type: object
  *       properties:
  *         title:
  *           type: string
- *           description: The title of the news item
+ *           description: The title of the articles item
  *         summary:
  *           type: string
- *           description: A brief summary of the news item
+ *           description: A brief summary of the articles item
  *         content:
  *           type: string
- *           description: Full content of the news item, stored as JSON blocks for Editor.js
+ *           description: Full content of the articles item, stored as JSON blocks for Editor.js
  *         category:
  *           type: string
- *           enum: [NewsCategoryEnumValues]
- *           description: Category of the news item
+ *           enum: [ArticlesCategoryEnumValues]
+ *           description: Category of the articles item
  *         isActive:
  *           type: boolean
- *           description: Is the news item active
+ *           description: Is the articles item active
  *         createdBy:
  *           type: string
- *           description: The ID of the user who created the news item
+ *           description: The ID of the user who created the articles item
  *         updatedBy:
  *           type: string
- *           description: The ID of the user who last updated the news item
+ *           description: The ID of the user who last updated the articles item
  *       required:
  *         - title
  *         - summary
  *         - content
  *         - category
  *       example:
- *         title: "Breaking News"
- *         summary: "Summary of the breaking news"
- *         content: "[{\"type\":\"header\",\"data\":{\"text\":\"Breaking News\",\"level\":2}}]"
+ *         title: "Breaking Articles"
+ *         summary: "Summary of the breaking articles"
+ *         content: "[{\"type\":\"header\",\"data\":{\"text\":\"Breaking Articles\",\"level\":2}}]"
  *         category: "Politics"
  *         isActive: false
  */

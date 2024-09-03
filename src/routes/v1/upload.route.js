@@ -8,7 +8,7 @@ const { validateUpload } = require('../../validations/upload.validation');
 
 const router = express.Router();
 
-router.route('/').post(auth("manageNews"), upload.single('file'), validateUpload, async (req, res) => {
+router.route('/').post(auth("manageArticles"), upload.single('file'), validateUpload, async (req, res) => {
     try {
         const fileUrl = await uploadImageToGCS(req.file);
         res.json({

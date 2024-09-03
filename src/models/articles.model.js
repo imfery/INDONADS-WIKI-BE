@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const { NEWS_CATEGORIES } = require('../config/enums');
+const { ARTICLES_CATEGORIES } = require('../config/enums');
 const { formatDateTime } = require('../utils/utils');
 
-const newsSchema = new mongoose.Schema(
+const articlesSchema = new mongoose.Schema(
     {
         title: {
             type: String,
@@ -21,7 +21,7 @@ const newsSchema = new mongoose.Schema(
         },
         category: {
             type: String,
-            enum: NEWS_CATEGORIES,
+            enum: ARTICLES_CATEGORIES,
             required: true,
             trim: true,
         },
@@ -47,12 +47,12 @@ const newsSchema = new mongoose.Schema(
     }
 );
 
-newsSchema.plugin(paginate);
-newsSchema.plugin(toJSON, {
+articlesSchema.plugin(paginate);
+articlesSchema.plugin(toJSON, {
     transformations: [{ fieldKey: 'createdAt', transformFn: formatDateTime }],
     showHiddenField: { createdAt: true },
 });
 
-const News = mongoose.model('News', newsSchema);
+const Articles = mongoose.model('Articles', articlesSchema);
 
-module.exports = News;
+module.exports = Articles;
