@@ -30,7 +30,7 @@ const createArticles = catchAsync(async (req, res) => {
 
 const getArticles = catchAsync(async (req, res) => {
     const filter = pick(req.query, []);
-    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    const options = pick(req.query, ['sortField', 'sortBy', 'limit', 'page']);
     const result = await articlesService.queryArticles(filter, options);
     res.send(successResponse(result));
 });

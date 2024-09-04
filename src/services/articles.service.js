@@ -23,7 +23,7 @@ const createArticles = async (articlesBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryArticles = async (filter, options) => {
-    const sortField = options.sortField || 'updatedAt'; // Default to 'updatedAt'
+    const sortField = options.sortField || 'createdAt'; // Default to 'updatedAt'
     const sortOrder = options.sortBy === 'desc' ? -1 : 1;
 
     const sort = { [sortField]: sortOrder };
