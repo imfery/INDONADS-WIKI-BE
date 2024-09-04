@@ -3,7 +3,7 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const docsRoute = require('./docs.route');
 const eventsRoute = require('./events.route');
-const newsRoute = require('./news.route');
+const articlesRoute = require('./articles.route');
 const config = require('../../config/config');
 const uploadRoute = require('./upload.route');
 
@@ -23,8 +23,8 @@ const defaultRoutes = [
         route: eventsRoute,
     },
     {
-        path: '/news',
-        route: newsRoute,
+        path: '/articles',
+        route: articlesRoute,
     },
     {
         path: '/upload',

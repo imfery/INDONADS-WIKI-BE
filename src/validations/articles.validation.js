@@ -1,7 +1,7 @@
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
-const { NEWS_CATEGORIES } = require('../config/enums');
-const LATEST_NEWS_COUNT = require('../constants/index');
+const { ARTICLES_CATEGORIES } = require('../config/enums');
+const LATEST_ARTICLES_COUNT = require('../constants/index');
 
 const validateContentBlocks = (value, helpers) => {
     try {
@@ -15,20 +15,20 @@ const validateContentBlocks = (value, helpers) => {
     }
 };
 
-const createNews = {
+const createArticles = {
     body: Joi.object().keys({
         title: Joi.string().required().trim(),
         summary: Joi.string().required().trim(),
         content: Joi.string().required().custom(validateContentBlocks, 'Content blocks validation'),
         category: Joi.string()
-            .valid(...NEWS_CATEGORIES)
+            .valid(...ARTICLES_CATEGORIES)
             .required()
             .trim(),
         isActive: Joi.boolean(),
     }),
 };
 
-const getNews = {
+const getArticles = {
     query: Joi.object().keys({
         sortField: Joi.string(),
         sortBy: Joi.string(),
@@ -37,19 +37,19 @@ const getNews = {
     }),
 };
 
-const getLatestNews = {
+const getLatestArticles = {
     query: Joi.object().keys({
-        limit: Joi.number().integer().default(LATEST_NEWS_COUNT),
+        limit: Joi.number().integer().default(LATEST_ARTICLES_COUNT),
     }),
 };
 
-const getNewsById = {
+const getArticlesById = {
     params: Joi.object().keys({
         id: Joi.string().custom(objectId).required(),
     }),
 };
 
-const updateNewsById = {
+const updateArticlesById = {
     params: Joi.object().keys({
         id: Joi.string().custom(objectId).required(),
     }),
@@ -57,26 +57,36 @@ const updateNewsById = {
         .keys({
             title: Joi.string().trim(),
             summary: Joi.string().trim(),
-            content: Joi.string().required().custom(validateContentBlocks, 'Content blocks validation'),
+            content: Joi.string().custom(validateContentBlocks, 'Content blocks validation'),
             category: Joi.string()
-                .valid(...NEWS_CATEGORIES)
+                .valid(...ARTICLES_CATEGORIES)
                 .trim(),
             isActive: Joi.boolean(),
         })
         .min(1),
 };
 
-const deleteNewsById = {
+const deleteArticlesById = {
     params: Joi.object().keys({
         id: Joi.string().custom(objectId).required(),
     }),
 };
 
+const getActiveArticles = {
+    query: Joi.object().keys({
+        sortField: Joi.string(),
+        sortBy: Joi.string(),
+        limit: Joi.number().integer(),
+        page: Joi.number().integer(),
+    }),
+};
+
 module.exports = {
-    createNews,
-    getNews,
-    getLatestNews,
-    getNewsById,
-    updateNewsById,
-    deleteNewsById,
+    createArticles,
+    getArticles,
+    getLatestArticles,
+    getArticlesById,
+    updateArticlesById,
+    deleteArticlesById,
+    getActiveArticles,
 };
