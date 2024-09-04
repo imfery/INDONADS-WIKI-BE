@@ -27,7 +27,7 @@ const articlesSchema = new mongoose.Schema(
         },
         isActive: {
             type: Boolean,
-            default: true,
+            default: false,
         },
         createdBy: {
             // Ensure these fields are defined
