@@ -8,7 +8,9 @@ if (config.env !== 'test') {
     transport
         .verify()
         .then(() => logger.info('Connected to email server'))
-        .catch(() => logger.warn('Unable to connect to email server. Make sure you have configured the SMTP options in .env'));
+        .catch(() =>
+            logger.warn('Unable to connect to email server. Make sure you have configured the SMTP options in .env')
+        );
 }
 
 /**
@@ -20,6 +22,8 @@ if (config.env !== 'test') {
  */
 const sendEmail = async (to, subject, text) => {
     const msg = { from: config.email.from, to, subject, text };
+    // eslint-disable-next-line no-console
+    console.log('msg -> ', msg);
     await transport.sendMail(msg);
 };
 
@@ -32,7 +36,7 @@ const sendEmail = async (to, subject, text) => {
 const sendResetPasswordEmail = async (to, token) => {
     const subject = 'Reset password';
     // replace this url with the link to the reset password page of your front-end app
-    const resetPasswordUrl = `http://link-to-app/reset-password?token=${token}`;
+    const resetPasswordUrl = `http://localhost:3000/admin/reset-password?token=${token}`;
     const text = `Dear user,
 To reset your password, click on this link: ${resetPasswordUrl}
 If you did not request any password resets, then ignore this email.`;
@@ -48,7 +52,7 @@ If you did not request any password resets, then ignore this email.`;
 const sendVerificationEmail = async (to, token) => {
     const subject = 'Email Verification';
     // replace this url with the link to the email verification page of your front-end app
-    const verificationEmailUrl = `http://link-to-app/verify-email?token=${token}`;
+    const verificationEmailUrl = `http://localhost:3000/verify-email?token=${token}`;
     const text = `Dear user,
 To verify your email, click on this link: ${verificationEmailUrl}
 If you did not create an account, then ignore this email.`;
