@@ -1,0 +1,75 @@
+name: Docker Build and Deploy Production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push-docker-image:
+    name: Build and Push docker image to Artifact Registry
+    environment:
+      name: production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create .env file
+        run: echo "${{ vars.ENV }}" > .env
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker to use gcloud as a credential helper
+        run: gcloud auth configure-docker
+
+      - name: Build, tag, and push image to Google Cloud Container Registry
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_REPOSITORY: ${{ vars.GCP_IMAGE_NAME }}
+          IMAGE_TAG: LATEST
+        run: |
+          docker build -t gcr.io/$GCP_PROJECT_ID/$GCP_REPOSITORY:$IMAGE_TAG .
+          docker push gcr.io/$GCP_PROJECT_ID/$GCP_REPOSITORY:$IMAGE_TAG
+
+  pull-and-run-docker-image:
+    needs: [build-and-push-docker-image]
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    steps:
+      - name: SSH into VM, pull the image, and run the container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ vars.REMOTE_HOST }}
+          username: ${{ vars.REMOTE_USER }}
+          key: ${{ secrets.ENV_SSH_PRIVATE_KEY }}
+          port: 22
+          command_timeout: 30m
+          debug: true
+          script: |
+
+            echo "${{ secrets.GCP_SA_KEY }}" > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+
+            echo "Pulling the latest image"
+            docker pull gcr.io/${{secrets.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
+
+            # echo "Stopping the container ${{ vars.CONTAINER_NAME }}"
+            # docker stop ${{ vars.CONTAINER_NAME }}
+
+            # echo "Removing the container ${{ vars.CONTAINER_NAME }}"
+            # docker rm ${{ vars.CONTAINER_NAME }}
+
+            echo "Run the new container ${{ vars.GCP_PROJECT_ID }} from the latest image ${{ vars.REGISTRY_URL }}/${{ vars.IMAGE_NAME }}:latest"
+            docker run -d --name ${{ vars.GCP_PROJECT_ID }} -p 3000:3000 gcr.io/${{secrets.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
+                        
+            echo "Removing unused images"
+            docker image prune -f
