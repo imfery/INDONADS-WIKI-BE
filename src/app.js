@@ -44,7 +44,7 @@ app.use(compression());
 // enable cors
 app.use(
     cors({
-        origin: 'http://localhost:3000',
+        origin: 'https://monadpedia.xyz',
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         exposedHeaders: ['set-cookie'],
