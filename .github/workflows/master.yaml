@@ -27,11 +27,15 @@ jobs:
       - name: Configure Docker to use gcloud as a credential helper
         run: gcloud auth configure-docker
 
+      - name: Extract version from package.json
+        id: vars
+        run: echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
       - name: Build, tag, and push image to Google Cloud Container Registry
         env:
           GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
           GCP_REPOSITORY: ${{ vars.GCP_IMAGE_NAME }}
-          IMAGE_TAG: LATEST
+          IMAGE_TAG: ${{ env.VERSION }}
         run: |
           docker build -t gcr.io/$GCP_PROJECT_ID/$GCP_REPOSITORY:$IMAGE_TAG .
           docker push gcr.io/$GCP_PROJECT_ID/$GCP_REPOSITORY:$IMAGE_TAG
@@ -60,7 +64,7 @@ jobs:
             gcloud config set project ${{ vars.GCP_PROJECT_ID }}
 
             echo "Pulling the latest image"
-            docker pull gcr.io/${{vars.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
+            docker pull gcr.io/${{vars.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:${{env.VERSION}}
 
             # echo "Stopping the container ${{ vars.CONTAINER_NAME }}"
             # docker stop ${{ vars.CONTAINER_NAME }}
@@ -68,8 +72,8 @@ jobs:
             # echo "Removing the container ${{ vars.CONTAINER_NAME }}"
             # docker rm ${{ vars.CONTAINER_NAME }}
 
-            echo "Run the new container ${{ vars.GCP_PROJECT_ID }} from the latest image ${{ vars.REGISTRY_URL }}/${{ vars.IMAGE_NAME }}:latest"
-            docker run -d --name ${{ vars.GCP_PROJECT_ID }} -p 8080:3000 gcr.io/${{secrets.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
+            echo "Run the new container ${{ vars.GCP_PROJECT_ID }} from the latest image ${{ vars.REGISTRY_URL }}/${{ vars.IMAGE_NAME }}:${{env.VERSION}}"
+            docker run -d --name ${{ vars.GCP_PROJECT_ID }} -p 8080:3000 gcr.io/${{secrets.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:${{env.VERSION}}
                         
             echo "Removing unused images"
             docker image prune -f
