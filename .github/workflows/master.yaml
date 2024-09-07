@@ -59,7 +59,7 @@ jobs:
           debug: true
           script: |
 
-            echo -e "${{ secrets.GCP_SA_KEY }}" > ${HOME}/gcloud-service-key.json
+            echo -e "${{ secrets.GCP_SA_KEY_QUOTA }}" > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud config set project ${{ vars.GCP_PROJECT_ID }}
 
