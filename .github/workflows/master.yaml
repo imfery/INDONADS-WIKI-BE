@@ -66,11 +66,11 @@ jobs:
             echo "Pulling the latest image"
             docker pull gcr.io/${{vars.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
 
-            # echo "Stopping the container ${{ vars.CONTAINER_NAME }}"
-            # docker stop ${{ vars.CONTAINER_NAME }}
+            echo "Stopping the container ${{ vars.GCP_PROJECT_ID }}"
+            docker stop ${{ vars.GCP_PROJECT_ID }}
 
-            # echo "Removing the container ${{ vars.CONTAINER_NAME }}"
-            # docker rm ${{ vars.CONTAINER_NAME }}
+            echo "Removing the container ${{ vars.CONTAINER_NAME }}"
+            docker rm ${{ vars.GCP_PROJECT_ID }}
 
             echo "Run the new container ${{ vars.GCP_PROJECT_ID }} from the latest image ${{ vars.REGISTRY_URL }}/${{ vars.IMAGE_NAME }}:LATEST"
             docker run -d --name ${{ vars.GCP_PROJECT_ID }} -p 8080:3000 gcr.io/${{secrets.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
