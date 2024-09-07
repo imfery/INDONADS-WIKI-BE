@@ -42,9 +42,18 @@ app.use(mongoSanitize());
 app.use(compression());
 
 // enable cors
+const allowedOrigins = ['https://www.monadpedia.xyz', 'https://monadpedia.xyz'];
 app.use(
     cors({
-        origin: 'https://monadpedia.xyz',
+        origin: (origin, callback) => {
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         exposedHeaders: ['set-cookie'],
