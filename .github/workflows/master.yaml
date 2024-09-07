@@ -35,7 +35,7 @@ jobs:
         env:
           GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
           GCP_REPOSITORY: ${{ vars.GCP_IMAGE_NAME }}
-          IMAGE_TAG: ${{ env.VERSION }}
+          IMAGE_TAG: LATEST
         run: |
           docker build -t gcr.io/$GCP_PROJECT_ID/$GCP_REPOSITORY:$IMAGE_TAG .
           docker push gcr.io/$GCP_PROJECT_ID/$GCP_REPOSITORY:$IMAGE_TAG
@@ -64,7 +64,7 @@ jobs:
             gcloud config set project ${{ vars.GCP_PROJECT_ID }}
 
             echo "Pulling the latest image"
-            docker pull gcr.io/${{vars.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:${{env.VERSION}}
+            docker pull gcr.io/${{vars.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
 
             # echo "Stopping the container ${{ vars.CONTAINER_NAME }}"
             # docker stop ${{ vars.CONTAINER_NAME }}
@@ -72,8 +72,8 @@ jobs:
             # echo "Removing the container ${{ vars.CONTAINER_NAME }}"
             # docker rm ${{ vars.CONTAINER_NAME }}
 
-            echo "Run the new container ${{ vars.GCP_PROJECT_ID }} from the latest image ${{ vars.REGISTRY_URL }}/${{ vars.IMAGE_NAME }}:${{env.VERSION}}"
-            docker run -d --name ${{ vars.GCP_PROJECT_ID }} -p 8080:3000 gcr.io/${{secrets.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:${{env.VERSION}}
+            echo "Run the new container ${{ vars.GCP_PROJECT_ID }} from the latest image ${{ vars.REGISTRY_URL }}/${{ vars.IMAGE_NAME }}:LATEST"
+            docker run -d --name ${{ vars.GCP_PROJECT_ID }} -p 8080:3000 gcr.io/${{secrets.GCP_PROJECT_ID}}/${{vars.GCP_IMAGE_NAME}}:LATEST
                         
             echo "Removing unused images"
             docker image prune -f
