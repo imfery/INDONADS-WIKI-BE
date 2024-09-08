@@ -7,7 +7,7 @@ const createEvent = {
         description: Joi.string().required(),
         date: Joi.date().required(),
         location: Joi.string().required(),
-        category: Joi.string().valid('Podcast', 'Meetup', 'Conference').required(),
+        category: Joi.string().required(),
     }),
 };
 
@@ -36,7 +36,7 @@ const updateEventById = {
             description: Joi.string().required(),
             date: Joi.date().required(),
             location: Joi.string().required(),
-            category: Joi.string().valid('Podcast', 'Meetup', 'Conference').required(),
+            category: Joi.string().required(),
         })
         .min(1),
 };

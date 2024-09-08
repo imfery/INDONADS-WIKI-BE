@@ -1,6 +1,5 @@
 const Joi = require('joi');
 const { objectId } = require('./custom.validation');
-const { ARTICLES_CATEGORIES } = require('../config/enums');
 const LATEST_ARTICLES_COUNT = require('../constants/index');
 
 const validateContentBlocks = (value, helpers) => {
@@ -20,10 +19,7 @@ const createArticles = {
         title: Joi.string().required().trim(),
         summary: Joi.string().required().trim(),
         content: Joi.string().required().custom(validateContentBlocks, 'Content blocks validation'),
-        category: Joi.string()
-            .valid(...ARTICLES_CATEGORIES)
-            .required()
-            .trim(),
+        category: Joi.string().required().trim(),
         isActive: Joi.boolean(),
     }),
 };
@@ -58,9 +54,7 @@ const updateArticlesById = {
             title: Joi.string().trim(),
             summary: Joi.string().trim(),
             content: Joi.string().custom(validateContentBlocks, 'Content blocks validation'),
-            category: Joi.string()
-                .valid(...ARTICLES_CATEGORIES)
-                .trim(),
+            category: Joi.string().trim(),
             isActive: Joi.boolean(),
         })
         .min(1),

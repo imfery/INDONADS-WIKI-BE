@@ -109,7 +109,6 @@ module.exports = router;
  *                 description: Full content of the articles item, stored as JSON blocks for Editor.js
  *               category:
  *                 type: string
- *                 enum: [ArticlesCategoryEnumValues]
  *                 description: Category of the articles item
  *               isActive:
  *                 type: boolean
@@ -368,7 +367,6 @@ module.exports = router;
  *           description: Full content of the articles item, stored as JSON blocks for Editor.js
  *         category:
  *           type: string
- *           enum: [ArticlesCategoryEnumValues]
  *           description: Category of the articles item
  *         isActive:
  *           type: boolean

@@ -299,10 +299,6 @@ module.exports = router;
  *         category:
  *           type: string
  *           description: The category of the event
- *           enum:
- *             - Podcast
- *             - Meetup
- *             - Conference
  *       required:
  *         - title
  *         - description
