@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const express = require('express');
 
 const auth = require('../../middlewares/auth');
@@ -8,7 +7,7 @@ const { validateUpload } = require('../../validations/upload.validation');
 
 const router = express.Router();
 
-router.route('/').post(auth("manageArticles"), upload.single('file'), validateUpload, async (req, res) => {
+router.route('/').post(auth('manageArticles'), upload.single('file'), validateUpload, async (req, res) => {
     try {
         const fileUrl = await uploadImageToGCS(req.file);
         res.json({

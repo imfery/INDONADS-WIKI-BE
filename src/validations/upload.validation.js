@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const Joi = require('joi');
 
 // Define the validation schema for the uploaded file

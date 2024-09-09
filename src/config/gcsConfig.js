@@ -1,16 +1,13 @@
-/* eslint-disable prettier/prettier */
 const { Storage } = require('@google-cloud/storage');
-const path = require('path');
 require('dotenv').config(); // Import dotenv to read .env variables
 
-// Retrieve environment variables
-const serviceKey = path.join(__dirname, process.env.GOOGLE_CLOUD_KEYFILE_PATH);
 const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
 const bucketName = process.env.GOOGLE_CLOUD_BUCKET_NAME;
 
-// Create a Google Cloud Storage client
+const jsonData = JSON.parse(process.env.GCS_JSON);
+
 const storage = new Storage({
-    keyFilename: serviceKey,
+    credentials: jsonData,
     projectId,
 });
 

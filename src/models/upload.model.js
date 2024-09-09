@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const multer = require('multer');
 
 // Store file in memory temporarily
