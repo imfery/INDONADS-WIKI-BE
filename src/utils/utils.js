@@ -22,7 +22,21 @@ function formatDateTime(date) {
     return `${day} ${month} ${year} ${hours}:${minutes}:${seconds}`;
 }
 
+function formatDateTimeOnly(date) {
+    const d = new Date(date);
+
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = d.toLocaleString('en-GB', { month: 'short' }).slice(0, 3);
+    const year = d.getFullYear();
+
+    const hours = d.getHours().toString().padStart(2, '0');
+    const minutes = d.getMinutes().toString().padStart(2, '0');
+
+    return `${day} ${month} ${year} ${hours}:${minutes}`;
+}
+
 module.exports = {
     formatDate,
     formatDateTime,
+    formatDateTimeOnly,
 };

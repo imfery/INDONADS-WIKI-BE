@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-const { formatDate, formatDateTime } = require('../utils/utils');
+const { formatDateTime, formatDateTimeOnly } = require('../utils/utils');
 
 const eventSchema = new mongoose.Schema(
     {
@@ -36,7 +36,7 @@ eventSchema.index({ date: 1 });
 
 eventSchema.plugin(toJSON, {
     transformations: [
-        { fieldKey: 'date', transformFn: formatDate },
+        { fieldKey: 'date', transformFn: formatDateTimeOnly },
         { fieldKey: 'createdAt', transformFn: formatDateTime },
     ],
     showHiddenField: { createdAt: true },
