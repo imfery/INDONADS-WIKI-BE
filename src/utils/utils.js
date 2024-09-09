@@ -1,5 +1,13 @@
+const convertToGMT7 = (date) => {
+    if (!date) return null;
+    const dateObj = new Date(date);
+    const gmt7Offset = 7 * 60;
+    const utcOffset = dateObj.getTimezoneOffset();
+    return new Date(dateObj.getTime() + (gmt7Offset + utcOffset) * 60000);
+};
+
 function formatDate(date) {
-    const d = new Date(date);
+    const d = convertToGMT7(date);
 
     const day = d.getDate().toString().padStart(2, '0');
     const month = d.toLocaleString('en-GB', { month: 'short' }).slice(0, 3);
@@ -9,7 +17,7 @@ function formatDate(date) {
 }
 
 function formatDateTime(date) {
-    const d = new Date(date);
+    const d = convertToGMT7(date);
 
     const day = d.getDate().toString().padStart(2, '0');
     const month = d.toLocaleString('en-GB', { month: 'short' }).slice(0, 3);
@@ -23,7 +31,7 @@ function formatDateTime(date) {
 }
 
 function formatDateTimeOnly(date) {
-    const d = new Date(date);
+    const d = convertToGMT7(date);
 
     const day = d.getDate().toString().padStart(2, '0');
     const month = d.toLocaleString('en-GB', { month: 'short' }).slice(0, 3);
@@ -35,8 +43,4 @@ function formatDateTimeOnly(date) {
     return `${day} ${month} ${year} ${hours}:${minutes}`;
 }
 
-module.exports = {
-    formatDate,
-    formatDateTime,
-    formatDateTimeOnly,
-};
+module.exports = { formatDate, formatDateTime, formatDateTimeOnly };
