@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const he = require('he');
 const { Articles } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { LATEST_ARTICLES_COUNT } = require('../constants/index');
@@ -92,6 +93,9 @@ const getArticlesById = async (id) => {
     if (!articlesItem) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Articles not found');
     }
+
+    articlesItem.content = he.decode(articlesItem.content);
+
     return articlesItem;
 };
 
