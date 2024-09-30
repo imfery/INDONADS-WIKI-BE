@@ -17,6 +17,7 @@ router
 
 router
     .route('/:id')
+    .get(validate(monadMadnessValidation.getMonadMadnessById), monadMadnessController.getMonadMadnessById)
     .patch(
         auth('manageMadness'),
         validate(monadMadnessValidation.updateMonadMadnessById),
@@ -111,6 +112,64 @@ module.exports = router;
  *         description: Bad request due to invalid query parameters
  *       500:
  *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /monad-madness/{id}:
+ *   get:
+ *     summary: Get a Monad Madness entry by ID
+ *     description: Retrieve a specific Monad Madness entry by its ID.
+ *     tags: [MonadMadness]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the Monad Madness entry to retrieve
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the entry
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: number
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: SUCCESS
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     title:
+ *                       type: string
+ *                       example: "Entry Title"
+ *                     description:
+ *                       type: string
+ *                       example: "Entry description"
+ *                     image:
+ *                       type: string
+ *                       example: "Entry image"
+ *                     twitter:
+ *                       type: string
+ *                       example: "Entry twitter"
+ *                     website:
+ *                       type: string
+ *                       example: "Entry website"
+ *       404:
+ *         description: Entry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Entry not found"
  */
 
 /**

@@ -23,9 +23,19 @@ const deleteMonadMadnessById = catchAsync(async (req, res) => {
     res.status(httpStatus.NO_CONTENT).send();
 });
 
+const getMonadMadnessById = catchAsync(async (req, res) => {
+    const data = await monadMadnessService.getMonadMadnessById(req.params.id);
+    if (!data) {
+        res.status(httpStatus.NOT_FOUND).send({ message: 'Entry not found' });
+    } else {
+        res.status(httpStatus.OK).send(successResponse(data));
+    }
+});
+
 module.exports = {
     createMonadMadness,
     getAllMonadMadness,
+    getMonadMadnessById,
     updateMonadMadnessById,
     deleteMonadMadnessById,
 };
