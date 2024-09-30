@@ -6,6 +6,7 @@ const eventsRoute = require('./events.route');
 const articlesRoute = require('./articles.route');
 const config = require('../../config/config');
 const uploadRoute = require('./upload.route');
+const monadMadness = require('./monadMadness.route');
 
 const router = express.Router();
 
@@ -29,6 +30,10 @@ const defaultRoutes = [
     {
         path: '/upload',
         route: uploadRoute,
+    },
+    {
+        path: '/monad-madness',
+        route: monadMadness,
     },
 ];
 
