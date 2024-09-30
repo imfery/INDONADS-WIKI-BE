@@ -9,7 +9,7 @@ const createMonadMadness = catchAsync(async (req, res) => {
 });
 
 const getAllMonadMadness = catchAsync(async (req, res) => {
-    const data = await monadMadnessService.getAllMonadMadness();
+    const data = await monadMadnessService.getAllMonadMadness(req.query);
     res.status(httpStatus.OK).send(successResponse(data));
 });
 

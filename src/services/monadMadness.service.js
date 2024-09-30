@@ -20,21 +20,21 @@ const getAllMonadMadness = async (query = {}) => {
     const sortOptions = { [sortField]: sortOrder };
 
     if (typeof limit === 'undefined' && typeof page === 'undefined') {
-        const events = await MonadMadness.find().sort(sortOptions);
-        return { events };
+        const participants = await MonadMadness.find().sort(sortOptions);
+        return { participants };
     }
 
-    const calculatedLimit = limit || 10;
-    const calculatedPage = page || 1;
+    const calculatedLimit = parseInt(limit, 10) || 10;
+    const calculatedPage = parseInt(page, 10) || 1;
     const skip = (calculatedPage - 1) * calculatedLimit;
 
-    const events = await MonadMadness.find().sort(sortOptions).skip(skip).limit(calculatedLimit);
+    const participants = await MonadMadness.find().sort(sortOptions).skip(skip).limit(calculatedLimit);
 
     const totalResults = await MonadMadness.countDocuments().exec();
     const totalPages = Math.ceil(totalResults / calculatedLimit);
 
     return {
-        events,
+        participants,
         page: calculatedPage,
         limit: calculatedLimit,
         totalPages,

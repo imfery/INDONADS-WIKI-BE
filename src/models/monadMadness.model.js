@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
 
+const { formatDateTime } = require('../utils/utils');
+
 const monadMadnessSchema = new mongoose.Schema(
     {
         title: {
@@ -32,7 +34,10 @@ const monadMadnessSchema = new mongoose.Schema(
     }
 );
 
-monadMadnessSchema.plugin(toJSON);
+monadMadnessSchema.plugin(toJSON, {
+    transformations: [{ fieldKey: 'createdAt', transformFn: formatDateTime }],
+    showHiddenField: { createdAt: true },
+});
 monadMadnessSchema.plugin(paginate);
 
 const MonadMadness = mongoose.model('MonadMadness', monadMadnessSchema);
