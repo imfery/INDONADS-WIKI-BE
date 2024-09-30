@@ -4,3 +4,4 @@ module.exports.tokenService = require('./token.service');
 module.exports.userService = require('./user.service');
 module.exports.eventService = require('./events.service');
 module.exports.articlesService = require('./articles.service');
+module.exports.monadMadnessService = require('./monadMadness.service');
