@@ -20,8 +20,8 @@ const createArticles = catchAsync(async (req, res) => {
 
     const articlesData = {
         ...req.body,
-        createdBy: user.email,
-        updatedBy: user.email,
+        createdBy: user.name,
+        updatedBy: user.name,
     };
 
     const articles = await articlesService.createArticles(articlesData);
@@ -68,7 +68,7 @@ const updateArticlesById = catchAsync(async (req, res) => {
     // Prepare the update data with the user's ID for the updatedBy field
     const articlesData = {
         ...req.body,
-        updatedBy: user.email,
+        updatedBy: user.name,
     };
 
     const articles = await articlesService.updateArticlesById(req.params.id, articlesData);
