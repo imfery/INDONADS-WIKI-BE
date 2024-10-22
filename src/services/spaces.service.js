@@ -24,6 +24,7 @@ const getAllSpaces = async (query = {}) => {
     const spaces = await Space.find().sort(sortOptions);
 
     const responseData = spaces.map((space) => ({
+        id: space.id,
         category: space.category,
         items: space.items.map((item) => ({
             title: item.title,
