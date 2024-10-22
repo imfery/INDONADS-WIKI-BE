@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const { toJSON, paginate } = require('./plugins');
-
 const { formatDateTime } = require('../utils/utils');
 
 const monadMadnessSchema = new mongoose.Schema(
@@ -25,6 +24,11 @@ const monadMadnessSchema = new mongoose.Schema(
         website: {
             type: String,
             required: true,
+        },
+        location: {
+            type: String,
+            default: 'Unknown',
+            trim: true,
         },
     },
     {

@@ -208,6 +208,9 @@ module.exports = router;
  *                 type: string
  *                 example: "tes"
  *                 required: true
+ *               location:
+ *                 type: string
+ *                 example: "Bangkok"
  *     responses:
  *       201:
  *         description: Entry created successfully
@@ -240,6 +243,9 @@ module.exports = router;
  *                     website:
  *                       type: string
  *                       example: "tes"
+ *               location:
+ *                 type: string
+ *                 example: "Bangkok"
  */
 
 /**
