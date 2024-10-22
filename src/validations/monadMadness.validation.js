@@ -8,6 +8,7 @@ const createMonadMadness = {
         image: Joi.string().required().trim(),
         twitter: Joi.string().required().trim(),
         website: Joi.string().required().trim(),
+        location: Joi.string().optional().trim(),
     }),
 };
 
@@ -37,6 +38,7 @@ const updateMonadMadnessById = {
             image: Joi.string().trim(),
             twitter: Joi.string().trim(),
             website: Joi.string().trim(),
+            location: Joi.string().optional().trim(),
         })
         .min(1),
 };
