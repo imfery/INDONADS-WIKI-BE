@@ -5,3 +5,4 @@ module.exports.userService = require('./user.service');
 module.exports.eventService = require('./events.service');
 module.exports.articlesService = require('./articles.service');
 module.exports.monadMadnessService = require('./monadMadness.service');
+module.exports.spacesService = require('./spaces.service');
