@@ -140,7 +140,7 @@ const queryActiveArticles = async (options) => {
     const skip = (page - 1) * limit;
 
     const articles = await Articles.find(filter)
-        .select('title summary category createdBy createdAt')
+        .select('title summary category banner createdBy createdAt')
         .sort(sort)
         .skip(skip)
         .limit(limit)
