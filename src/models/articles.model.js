@@ -29,13 +29,15 @@ const articlesSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        banner: {
+            type: String,
+            default: '',
+        },
         createdBy: {
-            // Ensure these fields are defined
             type: String,
             required: true,
         },
         updatedBy: {
-            // Ensure these fields are defined
             type: String,
             required: true,
         },

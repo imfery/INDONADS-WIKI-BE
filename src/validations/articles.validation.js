@@ -21,6 +21,7 @@ const createArticles = {
         content: Joi.string().required().custom(validateContentBlocks, 'Content blocks validation'),
         category: Joi.string().required().trim(),
         isActive: Joi.boolean(),
+        banner: Joi.string().uri().optional().allow(''),
     }),
 };
 
@@ -56,6 +57,7 @@ const updateArticlesById = {
             content: Joi.string().custom(validateContentBlocks, 'Content blocks validation'),
             category: Joi.string().trim(),
             isActive: Joi.boolean(),
+            banner: Joi.string().uri().optional().allow(''),
         })
         .min(1),
 };

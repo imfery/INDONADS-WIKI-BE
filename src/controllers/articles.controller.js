@@ -8,7 +8,6 @@ const { successResponse } = require('./custom.controller');
 
 const createArticles = catchAsync(async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
-
     const decodedToken = jwt.decode(token);
     const userId = decodedToken.sub;
 
@@ -65,7 +64,6 @@ const updateArticlesById = catchAsync(async (req, res) => {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'User not found');
     }
 
-    // Prepare the update data with the user's ID for the updatedBy field
     const articlesData = {
         ...req.body,
         updatedBy: user.name,
