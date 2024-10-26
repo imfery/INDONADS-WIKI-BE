@@ -4,7 +4,7 @@ const Joi = require('joi');
 const uploadSchema = Joi.object({
     file: Joi.object({
         mimetype: Joi.string().required().valid('image/jpeg', 'image/png', 'image/gif'), // Valid file types
-        size: Joi.number().max(5 * 1024 * 1024), // Maximum file size of 5MB
+        size: Joi.number().max(7 * 1024 * 1024), // Maximum file size of 5MB
     })
         .unknown(true)
         .required(),
